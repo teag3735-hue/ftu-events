@@ -572,19 +572,24 @@ const titleEsc = ev.title.replace(/'/g, "\\'");
   `}).join('');
 }
 function scrollToEvent(title) {
-  showTab('list', document.querySelectorAll('.tab')[1]);
+  // Chuyển sang tab list mà không trigger renderFiltered
+  ['calendar','list','points'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = 'none';
+  });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-list').style.display = 'block';
+  document.querySelectorAll('.tab')[1].classList.add('active');
+  document.getElementById('filter-bar').style.display = 'flex';
+  document.querySelector('.upcoming-label').textContent = '🔥 Sự kiện';
+  setActiveNav('nav-calendar');
+  
+  // Render xong rồi mới scroll
+  renderFiltered(EVENTS);
   setTimeout(() => {
     const items = document.querySelectorAll('.event-title');
     for (const el of items) {
       if (el.textContent.trim() === title) {
-        el.closest('.event-item').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        el.closest('.event-item').style.borderColor = 'var(--accent)';
-        setTimeout(() => el.closest('.event-item').style.borderColor = '', 1500);
-        break;
-      }
-    }
-  }, 300);
-}
+        el.closest('.event-item').scrollIntoVie
 function toggleUserMenu() {
   const menu = document.getElementById('user-menu');
   menu.style.display = menu.style.display === 'none' ? 'block' : 'none';

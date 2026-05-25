@@ -201,6 +201,17 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); font
       </div>
       <div class="notif-btn">🔔<div class="notif-dot"></div></div>
       <div class="avatar">NT</div>
+          <button id="btn-login"
+      onclick="loginGoogle()"
+      style="padding:6px 14px;border-radius:8px;background:#4f8ef7;color:white;border:none;cursor:pointer;font-size:13px">
+      Đăng nhập
+    </button>
+
+    <button id="btn-logout"
+      onclick="logoutGoogle()"
+      style="display:none;padding:6px 14px;border-radius:8px;background:#1a1e29;color:#7a7f94;border:1px solid #2a2e3a;cursor:pointer;font-size:13px">
+      Đăng xuất
+    </button>
     </div>
   </div>
 
@@ -614,6 +625,42 @@ function toggleFilter(el, type) {
 }
 
 buildCalendar();
+</script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDw4_CGPPtBScFg1RptokOu-Zffh0J1d3Y",
+    authDomain: "ftu-events.firebaseapp.com",
+    projectId: "ftu-events",
+    storageBucket: "ftu-events.firebasestorage.app",
+    messagingSenderId: "1072238259890",
+    appId: "1:1072238259890:web:0a03915a46fa97b91823ab"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  window.loginGoogle = async () => {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    document.getElementById('user-avatar').textContent = user.displayName[0];
+    document.getElementById('btn-login').style.display = 'none';
+    document.getElementById('btn-logout').style.display = 'block';
+  };
+
+  window.logoutGoogle = () => signOut(auth);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      document.getElementById('user-avatar').textContent = user.displayName[0];
+      document.getElementById('btn-login').style.display = 'none';
+      document.getElementById('btn-logout').style.display = 'block';
+    }
+  });
 </script>
 </body>
 </html>
